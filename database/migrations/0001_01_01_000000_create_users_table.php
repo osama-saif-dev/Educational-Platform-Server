@@ -16,10 +16,10 @@ return new class extends Migration
             $table->string('first_name');
             $table->string('last_name');
             $table->string('email')->unique();
-            $table->string('phone')->unique();
+            $table->string('phone')->unique()->nullable();
             $table->string('image')->default('default.jpg');
             $table->enum('role', ['student', 'teacher', 'admin'])->default('student');
-            $table->enum('gender', ['m', 'f'])->default('m');
+            $table->enum('gender', ['m', 'f'])->nullable()->default('m');
             $table->string('city')->nullable();
             $table->text('address')->nullable();
             $table->string('age')->nullable();
@@ -27,7 +27,8 @@ return new class extends Migration
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
-
+            $table->integer('code')->nullable()->unique();
+            $table->timestamp('code_expired_at')->nullable();
 
             // Teacher Inputs 
             $table->integer('ex_years')->nullable();

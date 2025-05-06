@@ -3,8 +3,9 @@
 namespace App\Http\Requests\Auth;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
-class RegisterRequest extends FormRequest
+class ContactRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -21,11 +22,12 @@ class RegisterRequest extends FormRequest
      */
     public function rules(): array
     {
+        $id = Auth::user()->id;
         return [
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
-            'email' => 'required|string|email|unique:users',
-            'password' => 'required|string|min:8|confirmed',
+            'first_name' => "required|string|max:255|exists:users",
+            'last_name' => "required|string|max:255|exists:users",
+            'email' => "required|string|email|exists:users",
+            'message' => 'required|string'
         ];
     }
 }

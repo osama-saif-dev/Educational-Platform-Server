@@ -8,7 +8,8 @@ use App\Http\Requests\Auth\VerifyCodeRequest;
 use App\Mail\SendCode;
 use App\Mail\SendLinkForForgetPassword;
 use App\Models\User;
-use App\Traits\HandleResponse;
+use App\Trait\HandleResponse;
+use App\Trait\HandleToken;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -17,7 +18,7 @@ use Illuminate\Support\Facades\Password;
 
 class VerifyController extends Controller
 {
-    use HandleResponse;
+    use HandleResponse, HandleToken;
 
     public function sendCode()
     {
@@ -43,20 +44,20 @@ class VerifyController extends Controller
     {
         $user_id = Auth::user()->id;
         $user = User::find($user_id);
-        $token = $user->createToken('token')->plainTextToken;
         $now = now();
-
         if ($request->code != $user->code) {
             return $this->errorsMessage(['error' => 'Code Is Invalid']);
         }
-
         if ($now > $user->code_expired_at) {
             return $this->errorsMessage(['error' => 'Code Is Expired, Please Resend Code Again']);
         }
-
         $user->email_verified_at = $now;
         $user->save();
-        return $this->data(compact('user', 'token'), 'Verify Successfully');
+        
+        $access_token = $this->generateNewAccessToken($user);
+        $refresh_token = $this->storeRefreshToken($user);
+
+        return $this->data(compact('user', 'access_token', 'refresh_token'), 'Verified Successfully');
     }
 
     public function verifyForgetPassword(CheckEmailRequest $request)
