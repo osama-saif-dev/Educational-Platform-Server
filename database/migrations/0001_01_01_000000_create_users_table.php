@@ -24,13 +24,14 @@ return new class extends Migration
             $table->text('address')->nullable();
             $table->string('age')->nullable();
             $table->timestamp('email_verified_at')->nullable();
+            $table->string('facebook_id')->nullable();
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
             $table->integer('code')->nullable()->unique();
             $table->timestamp('code_expired_at')->nullable();
 
-            // Teacher Inputs 
+            // Teacher Inputs
             $table->integer('ex_years')->nullable();
             $table->text('desc')->nullable();
             $table->text('special_adress')->nullable();
