@@ -35,4 +35,25 @@ trait HandleResponse
             'data' => (object)[]
         ], $code);
     }
+
+
+
+    public function errorsalertMessage(\Throwable $exception, string $message = '', int $code = 500)
+{
+    $debug = config('app.debug');
+
+    return response()->json([
+        'message' => $message,
+        'errors' => $debug ? [
+            'message' => $exception->getMessage(),
+            'file'    => $exception->getFile(),
+            'line'    => $exception->getLine()
+        ] : (object)[],
+        'data' => (object)[]
+    ], $code);
 }
+}
+
+
+
+
