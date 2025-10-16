@@ -25,9 +25,11 @@ trait HandleToken
     {
         $token = $user->createToken('token');
         $access_token = $token->plainTextToken;
+
         $tokenModel = $token->accessToken;
         $tokenModel->expires_at = now()->addHour();
         $tokenModel->save();
+        
         return $access_token;
     }
 

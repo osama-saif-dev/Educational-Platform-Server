@@ -34,8 +34,8 @@ class SocialController extends Controller
 
         if (!$user) {
             $user = User::create([
-                'first_name'   => explode(' ', $facebookUser->getName())[0] ?? 'User',
-                'last_name'    => explode(' ', $facebookUser->getName())[1] ?? 'FaceBook',
+                'first_name'   => explode(' ', $facebookUser->getName())[0] ?? 'FaceBook',
+                'last_name'    => explode(' ', $facebookUser->getName())[1] ?? 'user',
                 'email'        => $facebookUser->email,
                 'facebook_id'  => $facebookUser->id,
                 'email_verified_at' => now(),

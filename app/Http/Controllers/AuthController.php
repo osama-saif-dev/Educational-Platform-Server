@@ -62,6 +62,7 @@ class AuthController extends Controller
     public function refreshToken(RefreshTokenRequest $request)
     {
         $old_token = $this->isValidRefreshToken($request->refresh_token);
+        
         // here you should navigate to login page
         if (!$old_token) {
             return $this->errorsMessage([
@@ -69,9 +70,12 @@ class AuthController extends Controller
                 'status' => false
             ]);
         }
+
         $user = $old_token->user;
+
         $access_token = $this->generateNewAccessToken($user);
-        $refresh_token = $this->storeRefreshToken($user);
-        return $this->data(compact('user', 'access_token', 'refresh_token'));
+        // $refresh_token = $this->storeRefreshToken($user);
+
+        return $this->data(compact('user', 'access_token'));
     }
 }
