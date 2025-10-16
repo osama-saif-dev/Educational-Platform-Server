@@ -36,8 +36,6 @@ class CoursesController extends Controller
         }
     }
 
-
-
     public function store(CoursesRequest $request)
     {
         // return 'dd';

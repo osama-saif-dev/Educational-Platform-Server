@@ -19,8 +19,6 @@ class CategoriesController extends Controller
         return $this->data(compact('categories'), '', 200);
     }
 
-
-
     public function store(CategoryRequest $request)
     {
         try
