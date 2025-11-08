@@ -31,10 +31,18 @@ class CategoryService implements CategoryInterface
 
     public function getCategories($search = null)
     {
+
+        $allowedSorts = ['name', 'created_at', 'updated_at'];
+
+
+        $sortBy = in_array(request('sort_by'), $allowedSorts) ? request('sort_by') : 'created_at';
+        $sortDir = request('sort_dir') == 'asc' ? 'asc' : 'desc';
+
+
         $categories = Category::where('admin_id', $this->teacher->id)->where(function ($query) use($search)
         {
             $query->where('name', 'like', '%' . $search . '%');
-        })->latest()->paginate(5);
+        }) ->orderBy($sortBy, $sortDir)->paginate(5);
 
 
         return $categories;
