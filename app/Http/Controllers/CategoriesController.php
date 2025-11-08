@@ -35,11 +35,6 @@ class CategoriesController extends Controller
     }
 
 
-
-
-
-
-
     public function store(CategoryRequest $request)
     {
         $category = $this->categoryService->createCategory($request->validated());

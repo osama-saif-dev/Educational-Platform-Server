@@ -8,8 +8,6 @@ use App\Http\Controllers\Teacher\discountsController;
 Route::middleware('auth:sanctum')->group(function ()
 {
 
-
-
     Route::prefix('teachers')->middleware([IsTeacher::class])->group(function ()
     {
         Route::prefix('categories')->group(function ()
