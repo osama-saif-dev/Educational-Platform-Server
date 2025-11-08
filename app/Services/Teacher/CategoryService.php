@@ -28,25 +28,44 @@ class CategoryService implements CategoryInterface
     }
 
 
-
     public function getCategories($search = null)
-    {
+{
+    $allowedSorts = ['created_at', 'updated_at'];
 
-        $allowedSorts = ['name', 'created_at', 'updated_at'];
+    // خذ القيم من query string لو موجودة
+    $sortBy = in_array(request('sortBy'), $allowedSorts) ? request('sortBy') : 'created_at';
+    $sortDir = request('sortDir') == 'asc' ? 'asc' : 'desc';
 
-
-        $sortBy = in_array(request('sort_by'), $allowedSorts) ? request('sort_by') : 'created_at';
-        $sortDir = request('sort_dir') == 'asc' ? 'asc' : 'desc';
-
-
-        $categories = Category::where('admin_id', $this->teacher->id)->where(function ($query) use($search)
+    $categories = Category::where('admin_id', $this->teacher->id)
+        ->when($search, function ($query) use ($search)
         {
             $query->where('name', 'like', '%' . $search . '%');
-        }) ->orderBy($sortBy, $sortDir)->paginate(5);
+        })
+        ->orderBy($sortBy, $sortDir)
+        ->paginate(5); // بدون appends
+
+    return $categories;
+}
 
 
-        return $categories;
-    }
+    // public function getCategories($search = null)
+    // {
+
+    //     $allowedSorts = ['created_at', 'updated_at'];
+
+
+    //     $sortBy = in_array(request('sort_by'), $allowedSorts) ? request('sort_by') : 'created_at';
+    //     $sortDir = request('sort_dir') == 'asc' ? 'asc' : 'desc';
+
+
+    //     $categories = Category::where('admin_id', $this->teacher->id)->where(function ($query) use($search)
+    //     {
+    //         $query->where('name', 'like', '%' . $search . '%');
+    //     }) ->orderBy($sortBy, $sortDir)->paginate(5);
+
+
+    //     return $categories;
+    // }
 
 
 
