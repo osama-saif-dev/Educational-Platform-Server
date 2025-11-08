@@ -6,68 +6,80 @@ use App\Models\Category;
 use App\Trait\HandleToken;
 use Illuminate\Http\Request;
 use App\Trait\HandleResponse;
+use App\Http\Middleware\IsTeacher;
 use App\Http\Requests\Admin\CategoryRequest;
+use App\Interfaces\Teacher\CategoryInterface;
+use App\Http\Resources\Teacher\CategoryResouce;
 
 class CategoriesController extends Controller
 {
 
     use HandleResponse, HandleToken;
 
-    public function index()
+    public function __construct(private CategoryInterface $categoryService)
     {
-        $categories = Category::all();
-        return $this->data(compact('categories'), '', 200);
+
+
     }
+
+    public function index(Request $request)
+    {
+        $search = $request->query('search'); // أو $request->search
+
+        $categories = $this->categoryService->getCategories($search);
+
+        return $this->success(
+            'Categories retrieved successfully',
+            CategoryResouce::collection($categories)
+        );
+    }
+
+
+
+
+
+
 
     public function store(CategoryRequest $request)
     {
-        try
+        $category = $this->categoryService->createCategory($request->validated());
+        if(!$category)
         {
-            $create = Category::create(
-            [
-                'name'      => $request->name,
-                'admin_id'  => auth()->user()->id,
-            ]);
-
-            return $this->successMessage('Category Created Successfully');
-
-        } catch (\Throwable $th)
-        {
-           return $this->errorsMessage(
-            [
-                    'error' => 'This Category Not Created',
-                    'status' => false
-            ]);
+            return $this->error('exactly one category with this name is allowed');
         }
+        return $this->success('Category created successfully', new CategoryResouce($category));
     }
 
 
-    public function update(CategoryRequest $request,$id)
+
+
+    public function update(CategoryRequest $request,Category $category)
     {
-        try
+        $category = $this->categoryService->updateCategory($request->validated(),$category);
+
+        if (!$category)
         {
-            $category = Category::find($id);
-
-            if ($category)
-            {
-                $category->update(
-                [
-                    'name'              => $request->name,
-                    'admin_id'          => auth()->user()->id,
-                ]);
-                return $this->successMessage('Category  Updated Successfully');
-
-                }else
-            {
-                return $this->errorsMessage([
-                    'error' => 'This Category Not Found',
-                    'status' => false
-                ]);
-            }
-
-        } catch (\Throwable $th)
-        {
-            return $this->errorsalertMessage($th, 'You cannot perform this request right now. Please try again later.');
+            return $this->error('Category not found or not authorized');
         }
+
+        return $this->success('Category updated successfully',  new CategoryResouce($category));
+
     }
+
+
+
+    public function show(Category $category)
+    {
+        $category = $this->categoryService->showCategory($category);
+
+        if (!$category)
+        {
+            return $this->error('Category not found or not authorized');
+        }
+
+        return $this->success('',  new CategoryResouce($category));
+
+    }
+
+
 }

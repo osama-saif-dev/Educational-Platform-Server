@@ -43,35 +43,6 @@ Route::prefix('auth')->group(function () {
 Route::middleware('auth:sanctum')->group(function ()
 {
 
-    Route::get('/categories', [CategoriesController::class, 'index']);
-
-
-    Route::prefix('teachers')->middleware([IsTeacher::class])->group(function ()
-    {
-        Route::prefix('discounts')->group(function ()
-        {
-            Route::get('/', [discountsController::class, 'index']);
-            Route::post('/store', [discountsController::class, 'store']);
-            Route::post('/update/{id}', [discountsController::class, 'update']);
-        });
-
-        Route::prefix('courses')->group(function ()
-        {
-            Route::get('/', [CoursesController::class, 'index']);
-            Route::get('/get_copones', [CoursesController::class, 'get_copones']);
-            Route::post('/store', [CoursesController::class, 'store']);
-            Route::post('/update/{id}', [CoursesController::class, 'update']);
-        });
-
-
-        Route::prefix('course_detailes')->group(function ()
-        {
-            Route::get('/', [CoursesController::class, 'index']);
-            Route::get('/get_copones', [CoursesController::class, 'get_copones']);
-            Route::post('/store', [CoursesController::class, 'store']);
-            Route::post('/update/{id}', [CoursesController::class, 'update']);
-        });
-    });
 
 
 
@@ -96,6 +67,7 @@ Route::middleware('auth:sanctum')->group(function ()
             Route::post('/update/{id}', [CategoriesController::class, 'update']);
         });
     });
-    
+
 });
 
+require_once __DIR__.'/Teacher.php';
