@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('name')->index();
+            $table->decimal('price', 8, 2)->default(0.00); // حقل السعر بصيغة 0.00
             $table->foreignId('admin_id')->constrained('users','id')->cascadeOnDelete();
             $table->timestamps();
         });

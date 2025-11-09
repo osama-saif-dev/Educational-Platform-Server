@@ -30,6 +30,7 @@ class CategoryRequest extends FormRequest
                         ->where('admin_id', auth()->id()) // التحقق عند نفس المدرس فقط
                         ->ignore($categoryId), // تجاهل السجل الحالي عند التعديل
                 ],
+                'price' => 'required|numeric',
                 // 'admin_id'  => 'required|exists:users,id',
             ];
     }

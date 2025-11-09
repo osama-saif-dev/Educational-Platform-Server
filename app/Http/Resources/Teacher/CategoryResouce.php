@@ -13,6 +13,7 @@ class CategoryResouce extends JsonResource
         return [
             'id'        => $this->id,
             'name'      => $this->name ?? '',
+            'price'     => $this->price ?? '',
             'admin_id'  => $this->admin_id ?? '',
         ];
     }
