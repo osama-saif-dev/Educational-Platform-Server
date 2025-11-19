@@ -61,11 +61,7 @@ Route::middleware('auth:sanctum')->group(function ()
             Route::delete('/delete/{id}', [AdminController::class, 'delete']);
         });
 
-        Route::prefix('categories')->group(function ()
-        {
-            Route::post('/store', [CategoriesController::class, 'store']);
-            Route::post('/update/{id}', [CategoriesController::class, 'update']);
-        });
+    
     });
 
 });

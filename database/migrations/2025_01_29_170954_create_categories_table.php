@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name')->index();
             $table->decimal('price', 8, 2)->default(0.00); // حقل السعر بصيغة 0.00
-            $table->foreignId('admin_id')->constrained('users','id')->cascadeOnDelete();
+            $table->foreignId('teacher_id')->constrained('users','id')->cascadeOnDelete();
             $table->timestamps();
         });
     }

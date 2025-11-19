@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('courses', function (Blueprint $table) {
+        Schema::create('courses', function (Blueprint $table)
+        {
             $table->id();
             $table->foreignId('teacher_id')->constrained('users','id')->cascadeOnDelete();
             $table->foreignId('copon_id')->nullable()->constrained('discounts','id')->cascadeOnDelete();
-            $table->foreignId('category_id')->nullable()->constrained('categories','id')->cascadeOnDelete();
             $table->string('title');
             $table->enum('is_paid',['paid','un_paid'])->default('un_paid');
             $table->decimal('price',10,2)->require()->default(0.00);

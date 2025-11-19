@@ -19,7 +19,7 @@ return new class extends Migration
             $table->integer('views_count')->default(0);
             $table->integer('rate')->default(0);
             $table->text('desc');
-             $table->string('video');
+            $table->string('video');
 
 
             $table->timestamps();

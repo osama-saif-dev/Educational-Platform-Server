@@ -23,7 +23,6 @@ class CoursesRequest extends FormRequest
     {
         return
         [
-            'teacher_id'            => 'required|exists:users,id',
             'copon_id'              => 'nullable|exists:discounts,id',
             'title'                 => 'required',
             'desc'                  => 'required',
