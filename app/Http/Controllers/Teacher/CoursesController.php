@@ -9,19 +9,35 @@ use App\Trait\HandleToken;
 use Illuminate\Http\Request;
 use App\Trait\HandleResponse;
 use App\Http\Controllers\Controller;
+use App\Interfaces\Teacher\CourseInterface;
 use App\Http\Requests\Teacher\CoursesRequest;
+use App\Http\Resources\Teacher\CourseResource;
 
 class CoursesController extends Controller
 {
     use HandleResponse, HandleToken;
 
-
-    public function index()
+    public function __construct(private CourseInterface $courseService)
     {
-        $courses = Course::all();
-        return $this->data(compact('courses'), '', 200);
+
 
     }
+
+
+    public function index(Request $request)
+    {
+        $search = $request->query('search'); // أو $request->search
+
+        $courses = $this->courseService->getCourses($search);
+
+        return $this->success(
+            'Courses retrieved successfully',
+            CourseResource::collection($courses)
+        );
+    }
+
+
+
 
     public function get_copones()
     {
@@ -36,61 +52,48 @@ class CoursesController extends Controller
         }
     }
 
+
+
+
     public function store(CoursesRequest $request)
     {
-        // return 'dd';
-        try
+        $course = $this->courseService->createCourse($request->validated());
+        if(!$course)
         {
-            $create = Course::create(
-            [
-                'copon_id'              => $request->copon_id,
-                'teacher_id'            => auth()->user()->id,
-                'title'                 => $request->title,
-                'price'                 => $request->price,
-                'desc'                  => $request->desc,
-                'video'                 => $request->video,
-            ]);
-
-            return $this->successMessage('Course Created Successfully');
-
-        } catch (\Throwable $th)
-        {
-            return $this->errorsalertMessage($th, 'You cannot perform this request right now. Please try again later.');
+            return $this->error('exactly one category with this name is allowed');
         }
+        return $this->success('Course created successfully', new CourseResource($course));
     }
 
 
-    public function update(CoursesRequest $request,$id)
+
+
+    public function update(CoursesRequest $request,Course $course)
     {
-        // return 'dd';
-        try
-        {
-            $course = Course::find($id);
-            if ($course)
-            {
-                $course->update(
-                [
-                    'copon_id'              => $request->copon_id,
-                    'teacher_id'            => auth()->user()->id,
-                    'title'                 => $request->title,
-                    'price'                 => $request->price,
-                    'desc'                  => $request->desc,
-                    'video'                 => $request->video,
-                ]);
-                return $this->successMessage('Course Updated Successfully');
+        $course = $this->courseService->updateCourse($request->validated(),$course);
 
-                }else
-            {
-                return $this->errorsMessage([
-                    'error' => 'This Course Not Found',
-                    'status' => false
-                ]);
-            }
-
-        } catch (\Throwable $th)
+        if (!$course)
         {
-            return $this->errorsalertMessage($th, 'You cannot perform this request right now. Please try again later.');
+            return $this->error('Course not found or not authorized');
         }
+
+        return $this->success('Course updated successfully',  new CourseResource($course));
+
+    }
+
+
+
+    public function show(Course $course)
+    {
+        $course = $this->courseService->showCourse($course);
+
+        if (!$course)
+        {
+            return $this->error('Course not found or not authorized');
+        }
+
+        return $this->success('',  new CourseResource($course));
+
     }
 
 

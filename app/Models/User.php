@@ -3,17 +3,19 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Models\Course;
+use App\Models\CourseDetailes;
+use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable, HasApiTokens;
 
-   
+
     protected $guarded = [];
 
 
@@ -45,5 +47,17 @@ class User extends Authenticatable
     public function refreshTokne()
     {
         return $this->hasMany(RefreshToken::class);
+    }
+
+
+
+    public function courseDetailes()
+    {
+        return $this->hasManyThrough(CourseDetailes::class,Course::class,
+            'teacher_id',     // مفتاح الربط في جدول courses
+            'course_id',      // مفتاح الربط في جدول course_detailes
+            'id',             // مفتاح users
+            'id'              // مفتاح courses
+        );
     }
 }
